@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/developers")
 public class DeveloperController {
@@ -49,7 +50,7 @@ public class DeveloperController {
         if (updates.getName() != null) developer.setName(updates.getName());
         if (updates.getEmail() != null) developer.setEmail(updates.getEmail());
         if (updates.getCohort() != null) developer.setCohort(updates.getCohort());
-        if (updates.getLanguages() != null) developer.setLanguages(updates.getLanguages());
+      //  if (updates.getLanguages() != null) developer.setLanguages(updates.getLanguages());
 
         return repository.save(developer);
     }

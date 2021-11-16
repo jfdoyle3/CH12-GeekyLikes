@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class Geekout {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

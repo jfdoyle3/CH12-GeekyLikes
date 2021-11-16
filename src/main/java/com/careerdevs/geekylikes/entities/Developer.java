@@ -2,6 +2,7 @@ package com.careerdevs.geekylikes.entities;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Developer {
@@ -11,17 +12,26 @@ public class Developer {
     private String name;
     private String email;
     private Integer cohort;
-    private String[] languages;
+
     @OneToMany
     @JoinColumn(name = "developer_id", referencedColumnName = "id")
     private List<Geekout> geekouts;
 
+    @ManyToMany
+    @JoinTable(
+            name="developer_language",
+            joinColumns=@JoinColumn(name="developer_id"),
+            inverseJoinColumns = @JoinColumn(name="language_id")
+    )
+    private Set<Language> languages;
+
     public Developer() {}
 
-    public Developer(String name, String email, Integer cohort, String[] languages) {
+    public Developer(String name, String email, Integer cohort, List<Geekout> geekouts, Set<Language> languages) {
         this.name = name;
         this.email = email;
         this.cohort = cohort;
+        this.geekouts = geekouts;
         this.languages = languages;
     }
 
@@ -57,11 +67,19 @@ public class Developer {
         this.cohort = cohort;
     }
 
-    public String[] getLanguages() {
+    public List<Geekout> getGeekouts() {
+        return geekouts;
+    }
+
+    public void setGeekouts(List<Geekout> geekouts) {
+        this.geekouts = geekouts;
+    }
+
+    public Set<Language> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(String[] languages) {
+    public void setLanguages(Set<Language> languages) {
         this.languages = languages;
     }
 }
