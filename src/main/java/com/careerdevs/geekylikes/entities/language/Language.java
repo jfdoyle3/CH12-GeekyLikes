@@ -1,16 +1,21 @@
-package com.careerdevs.geekylikes.entities;
+package com.careerdevs.geekylikes.entities.language;
+
+import com.careerdevs.geekylikes.entities.developer.Developer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Language {
+public class Language{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String tag;
 
+    @JsonBackReference
     @ManyToMany
     @JoinTable(
             name="developer_language",

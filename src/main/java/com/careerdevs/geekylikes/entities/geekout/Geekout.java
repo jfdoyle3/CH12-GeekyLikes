@@ -1,4 +1,8 @@
-package com.careerdevs.geekylikes.entities;
+package com.careerdevs.geekylikes.entities.geekout;
+
+import com.careerdevs.geekylikes.entities.developer.Developer;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonMerge;
 
 import javax.persistence.*;
 
@@ -9,6 +13,7 @@ public class Geekout {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "developer_id", referencedColumnName = "id")
     private Developer developer;

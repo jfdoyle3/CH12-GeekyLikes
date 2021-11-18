@@ -1,4 +1,8 @@
-package com.careerdevs.geekylikes.entities;
+package com.careerdevs.geekylikes.entities.developer;
+
+import com.careerdevs.geekylikes.entities.geekout.Geekout;
+import com.careerdevs.geekylikes.entities.language.Language;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +20,7 @@ public class Developer {
     @OneToMany
     @JoinColumn(name = "developer_id", referencedColumnName = "id")
     private List<Geekout> geekouts;
+
 
     @ManyToMany
     @JoinTable(

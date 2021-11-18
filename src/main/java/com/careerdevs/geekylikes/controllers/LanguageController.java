@@ -1,7 +1,7 @@
 package com.careerdevs.geekylikes.controllers;
 
 
-import com.careerdevs.geekylikes.entities.Language;
+import com.careerdevs.geekylikes.entities.language.Language;
 import com.careerdevs.geekylikes.repositories.LanguageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

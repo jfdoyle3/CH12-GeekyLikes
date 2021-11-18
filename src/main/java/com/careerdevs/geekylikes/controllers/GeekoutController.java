@@ -1,5 +1,5 @@
 package com.careerdevs.geekylikes.controllers;
-import com.careerdevs.geekylikes.entities.Geekout;
+import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.repositories.GeekoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

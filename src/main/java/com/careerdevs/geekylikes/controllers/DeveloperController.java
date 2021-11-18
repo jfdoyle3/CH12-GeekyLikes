@@ -1,6 +1,6 @@
 package com.careerdevs.geekylikes.controllers;
 
-import com.careerdevs.geekylikes.entities.Developer;
+import com.careerdevs.geekylikes.entities.developer.Developer;
 import com.careerdevs.geekylikes.repositories.DeveloperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
