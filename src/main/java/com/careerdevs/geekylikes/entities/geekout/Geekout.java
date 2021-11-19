@@ -1,21 +1,23 @@
 package com.careerdevs.geekylikes.entities.geekout;
 
 import com.careerdevs.geekylikes.entities.developer.Developer;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonMerge;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
 
 @Entity
+
 public class Geekout {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "developer_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({"languages","email","avatar"})
     private Developer developer;
 
     private String title;

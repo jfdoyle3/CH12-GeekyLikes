@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface DeveloperRepository extends JpaRepository<Developer,Long> {
     List<Developer> findAllByCohort(Integer cohort, Sort sort);
+    Developer findByAvatar_id(Long id);
 }

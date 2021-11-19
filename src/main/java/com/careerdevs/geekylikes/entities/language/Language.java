@@ -1,28 +1,32 @@
 package com.careerdevs.geekylikes.entities.language;
 
-import com.careerdevs.geekylikes.entities.developer.Developer;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.careerdevs.geekylikes.entities.developer.Developer;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
+
 @Entity
-public class Language{
+public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String tag;
 
-    @JsonBackReference
+
     @ManyToMany
     @JoinTable(
             name="developer_language",
             joinColumns = @JoinColumn(name = "language_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
-    private Set<Developer> developers;
+    @JsonIgnoreProperties({"languages"})
+    private Set<Developer> developers = new HashSet<>();
 
     public Language() {
     }
@@ -55,6 +59,14 @@ public class Language{
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public Set<Developer> getDevelopers() {
+        return developers;
+    }
+
+    public void setDevelopers(Set<Developer> developers) {
+        this.developers = developers;
     }
 }
 
