@@ -1,18 +1,18 @@
 package com.careerdevs.geekylikes.entities.geekout;
 
+import com.careerdevs.geekylikes.entities.approve.Approve;
 import com.careerdevs.geekylikes.entities.developer.Developer;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 
 public class Geekout {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -22,6 +22,10 @@ public class Geekout {
 
     private String title;
     private String content;
+
+    @OneToMany(mappedBy = "geekout", fetch = FetchType.LAZY)
+    @JsonIncludeProperties("developer")
+    private Set<Approve> approvals;
 
     public Geekout() {
     }
@@ -62,5 +66,13 @@ public class Geekout {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Set<Approve> getApprovals() {
+        return approvals;
+    }
+
+    public void setApprovals(Set<Approve> approvals) {
+        this.approvals = approvals;
     }
 }

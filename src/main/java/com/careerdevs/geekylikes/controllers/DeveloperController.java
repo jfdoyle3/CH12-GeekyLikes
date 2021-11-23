@@ -3,8 +3,10 @@ package com.careerdevs.geekylikes.controllers;
 
 import com.careerdevs.geekylikes.entities.avatar.Avatar;
 import com.careerdevs.geekylikes.entities.developer.Developer;
+import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.repositories.AvatarRepository;
 import com.careerdevs.geekylikes.repositories.DeveloperRepository;
+import com.careerdevs.geekylikes.repositories.GeekoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -25,11 +27,19 @@ public class DeveloperController {
     @Autowired
     private AvatarRepository avatarRepository;
 
+    @Autowired
+    private GeekoutRepository geekoutRepository;
+
 
     @GetMapping
-    public @ResponseBody
-    List<Developer> getDevelopers() {
+    @ResponseBody
+    public List<Developer> getDevelopers() {
         return repository.findAll();
+    }
+
+    @GetMapping("/lang/{langId}")
+    public List<Developer> getDevsByLanguage(@PathVariable Long langId) {
+        return repository.findAllByLanguages_id(langId);
     }
 
     @GetMapping("/cohort/{cohort}")
@@ -37,9 +47,14 @@ public class DeveloperController {
         return new ResponseEntity<>(repository.findAllByCohort(cohort, Sort.by("name")), HttpStatus.OK);
     }
 
+    @GetMapping("/likes/{devId}")
+    public List<Geekout> getApprovedGeekouts(@PathVariable Long devId) {
+        return geekoutRepository.findAllByApprovals_developer_id(devId);
+    }
+
     @GetMapping("/{id}")
-    public @ResponseBody
-    Developer getOneDeveloper(@PathVariable Long id) {
+    @ResponseBody
+    public Developer getOneDeveloper(@PathVariable Long id) {
         return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -72,8 +87,8 @@ public class DeveloperController {
     }
 
     @PutMapping("/{id}")
-    public @ResponseBody
-    Developer updateDeveloper(@PathVariable Long id, @RequestBody Developer updates) {
+    @ResponseBody
+    public Developer updateDeveloper(@PathVariable Long id, @RequestBody Developer updates) {
         Developer developer = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
 //        updates.setId(developer.getId());

@@ -1,9 +1,11 @@
 package com.careerdevs.geekylikes.entities.developer;
 
+import com.careerdevs.geekylikes.entities.approve.Approve;
 import com.careerdevs.geekylikes.entities.avatar.Avatar;
 import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.entities.language.Language;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -23,7 +25,7 @@ import java.util.Set;
 @Entity
 public class Developer {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
@@ -34,14 +36,18 @@ public class Developer {
 //    private List<Geekout> geekouts;
 
 // Makes it one directional, but keeps many to many
-//    @ManyToMany
-//    @JoinTable(
-//            name = "developer_language",
-//            joinColumns = @JoinColumn(name = "developer_id"),
-//            inverseJoinColumns = @JoinColumn(name = "language_id")
-//    )
-//    @JsonIgnoreProperties({"developers"})
-//    public Set<Language> languages = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "developer_language",
+            joinColumns = @JoinColumn(name = "developer_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    @JsonIgnoreProperties("developers")
+    public Set<Language> languages = new HashSet<>();
+
+    @OneToMany(mappedBy = "developer", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Approve> approvals;
 
     @OneToOne
     private Avatar avatar;
