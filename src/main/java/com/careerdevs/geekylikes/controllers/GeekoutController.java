@@ -35,7 +35,7 @@ public class GeekoutController {
 
     @PostMapping
     public ResponseEntity<Geekout> createOne(@RequestBody Geekout geekout) {
-//        System.out.println(geekout.getDeveloper().getId());
+//       System.out.println(">>>-----> "+geekout.getDeveloper().getId());
         return new ResponseEntity<>(repository.save(geekout), HttpStatus.CREATED);
     }
 

@@ -8,11 +8,10 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-
 public class Geekout {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne

@@ -81,7 +81,6 @@ public class DeveloperController {
     @PutMapping("/language")
     public Developer addLanguage(@RequestBody Developer updates) {
         Developer developer = repository.findById(updates.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
         developer.languages.addAll(updates.languages);
         return repository.save(developer);
     }

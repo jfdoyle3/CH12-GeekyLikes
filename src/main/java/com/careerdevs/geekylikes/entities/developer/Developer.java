@@ -25,7 +25,7 @@ import java.util.Set;
 @Entity
 public class Developer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     private String name;
     private String email;
