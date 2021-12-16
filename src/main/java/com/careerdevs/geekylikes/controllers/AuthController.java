@@ -1,16 +1,16 @@
 package com.careerdevs.geekylikes.controllers;
 
-import com.geekylikes.app.models.auth.ERole;
-import com.geekylikes.app.models.auth.Role;
-import com.geekylikes.app.models.auth.User;
-import com.geekylikes.app.payloads.request.LoginRequest;
-import com.geekylikes.app.payloads.request.SignupRequest;
-import com.geekylikes.app.payloads.response.JwtResponse;
-import com.geekylikes.app.payloads.response.MessageResponse;
-import com.geekylikes.app.repositories.RoleRepository;
-import com.geekylikes.app.repositories.UserRepository;
-import com.geekylikes.app.security.jwt.JwtUtils;
-import com.geekylikes.app.security.services.UserDetailsImpl;
+import com.careerdevs.geekylikes.entities.auth.ERole;
+import com.careerdevs.geekylikes.entities.auth.Role;
+import com.careerdevs.geekylikes.entities.auth.User;
+import com.careerdevs.geekylikes.payloads.requests.LoginRequest;
+import com.careerdevs.geekylikes.payloads.requests.SignupRequest;
+import com.careerdevs.geekylikes.payloads.response.JwtResponse;
+import com.careerdevs.geekylikes.payloads.response.MessageResponse;
+import com.careerdevs.geekylikes.repositories.RoleRepository;
+import com.careerdevs.geekylikes.repositories.UserRepository;
+import com.careerdevs.geekylikes.security.jwt.JwtUtils;
+import com.careerdevs.geekylikes.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

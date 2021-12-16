@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "d7006b9f-98e3-4283-8b2c-9549b17b0fbe",
-		"name": "GeekLikes",
+		"_postman_id": "938f4e9b-ec07-4c87-8bf6-13a4ec245cfb",
+		"name": "GeekyLikes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -34,6 +34,72 @@
 							"path": [
 								"api",
 								"developers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Languages by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/developers/lang/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"developers",
+								"lang",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by Cohort",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/developers/cohort/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"developers",
+								"cohort",
+								"3"
 							]
 						}
 					},
@@ -87,7 +153,7 @@
 					"response": []
 				},
 				{
-					"name": "Languages",
+					"name": "a Language",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -199,7 +265,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"developer\":{\r\n        \"id\":1\r\n    },\r\n    \"title\":\"Who\",\r\n    \"content\":\"are you\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -218,74 +284,37 @@
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "a Geekout",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"developer\":{\r\n        \"id\":1\r\n    },\r\n    \"title\":\"Who\",\r\n    \"content\":\"are you\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:8080/api/geekouts",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"api",
-										"geekouts"
-									]
+					"response": []
+				},
+				{
+					"name": "a Like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1,\r\n    \"developer\":{\r\n        \"id\":3\r\n    }\r\n \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Vary",
-									"value": "Access-Control-Request-Method"
-								},
-								{
-									"key": "Vary",
-									"value": "Access-Control-Request-Headers"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Date",
-									"value": "Thu, 25 Nov 2021 06:05:26 GMT"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=60"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/geekouts/like/1",
+							"host": [
+								"localhost"
 							],
-							"cookie": [],
-							"body": "{\n    \"id\": 4,\n    \"developer\": {\n        \"id\": 1,\n        \"name\": null,\n        \"cohort\": null\n    },\n    \"title\": \"Who\",\n    \"content\": \"are you\",\n    \"approvals\": null\n}"
+							"port": "8080",
+							"path": [
+								"api",
+								"geekouts",
+								"like",
+								"1"
+							]
 						}
-					]
+					},
+					"response": []
 				}
 			]
 		},
@@ -354,6 +383,148 @@
 								"api",
 								"languages",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up/In",
+					"item": [
+						{
+							"name": "Sign In",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"abcd@efgh.com\",\r\n    \"password\":\"123456789\",\r\n    \"roles\":\"mod\"\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/auth/signup",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign Up",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"abcd@efgh.com\",\r\n    \"password\":\"123456789\",\r\n    \"roles\":\"mod\"\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/api/auth/signup",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Test Roles",
+					"item": [
+						{
+							"name": "Test User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/test/user",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"test",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Test Moderator",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/test/mod",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"test",
+										"mod"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Test Admin",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Test Public",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/test/public",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"public"
 							]
 						}
 					},

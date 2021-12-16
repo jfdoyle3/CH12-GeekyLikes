@@ -1,5 +1,6 @@
 package com.careerdevs.geekylikes.security;
 
+
 import com.careerdevs.geekylikes.security.jwt.AuthEntryPointJwt;
 import com.careerdevs.geekylikes.security.jwt.AuthTokenFilter;
 import com.careerdevs.geekylikes.security.services.UserDetailsServiceImpl;
@@ -14,42 +15,58 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.ExecutionException;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    UserDetailsServiceImpl userDetailsServiceImpl;
+    UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter(){
+    public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
 
     @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
-        authenticationManagerBuilder.userDetailsService(userDetailsServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception{
-        http.cors().and()
-            .csrf().disable().exceptionHandling()
-            .authenticationEntryPoint(unauthorizedHandler).and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests().antMatchers("/api/auth/**").permitAll().anyRequest().authenticated();
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers("/api/auth/**").permitAll().and()
+                .authorizeRequests().antMatchers("/api/test/**").permitAll()
+//                .antMatchers("/api/geekout/*").permitAll()
+                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

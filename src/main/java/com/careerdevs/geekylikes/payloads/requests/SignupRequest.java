@@ -1,12 +1,20 @@
 package com.careerdevs.geekylikes.payloads.requests;
 
-public class LoginRequest {
+import java.util.Set;
+
+public class SignupRequest {
     private String username;
     private String password;
+    private Set<String> roles;
 
-    public LoginRequest(String username, String password) {
+    public SignupRequest(String username, String password, Set<String> roles) {
         this.username = username;
         this.password = password;
+        this.roles = roles;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
     }
 
     public String getUsername() {
