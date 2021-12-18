@@ -15,4 +15,6 @@ public interface DeveloperRepository extends JpaRepository<Developer, Long> {
 
     //get a list of developers that liked geekout
     List<Developer> findAllByApprovals_geekout_id(Long id);
+
+    Developer findByUser_id(Long id);
 }

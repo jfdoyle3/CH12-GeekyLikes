@@ -1,16 +1,22 @@
 package com.careerdevs.geekylikes.controllers;
 
 
+import com.careerdevs.geekylikes.entities.auth.User;
 import com.careerdevs.geekylikes.entities.avatar.Avatar;
 import com.careerdevs.geekylikes.entities.developer.Developer;
 import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.repositories.AvatarRepository;
 import com.careerdevs.geekylikes.repositories.DeveloperRepository;
 import com.careerdevs.geekylikes.repositories.GeekoutRepository;
+import com.careerdevs.geekylikes.repositories.UserRepository;
+import com.careerdevs.geekylikes.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,6 +35,9 @@ public class DeveloperController {
 
     @Autowired
     private GeekoutRepository geekoutRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping
@@ -61,6 +70,11 @@ public class DeveloperController {
 
     @PostMapping
     public ResponseEntity<Developer> createDeveloper(@RequestBody Developer newDeveloper) {
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails=(UserDetailsImpl) authentication.getPrincipal();
+        User currentUser=userRepository.findById(userDetails.getId()).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        newDeveloper.setUser(currentUser);
         return new ResponseEntity<>(repository.save(newDeveloper), HttpStatus.CREATED);
     }
 
@@ -105,5 +119,7 @@ public class DeveloperController {
         repository.deleteById(id);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
+
+
 
 }
