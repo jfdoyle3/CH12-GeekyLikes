@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DeveloperRepository extends JpaRepository<Developer, Long> {
@@ -16,5 +17,7 @@ public interface DeveloperRepository extends JpaRepository<Developer, Long> {
     //get a list of developers that liked geekout
     List<Developer> findAllByApprovals_geekout_id(Long id);
 
-    Developer findByUser_id(Long id);
+    Optional<Developer> findByUser_id(Long id);
+
+    Void deleteByUser_id(Long id);
 }
