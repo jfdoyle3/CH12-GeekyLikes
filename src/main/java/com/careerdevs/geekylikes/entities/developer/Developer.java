@@ -1,6 +1,7 @@
 package com.careerdevs.geekylikes.entities.developer;
 
 import com.careerdevs.geekylikes.entities.approve.Approve;
+import com.careerdevs.geekylikes.entities.auth.User;
 import com.careerdevs.geekylikes.entities.avatar.Avatar;
 import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.entities.language.Language;
@@ -52,12 +53,18 @@ public class Developer {
     @OneToOne
     private Avatar avatar;
 
+    @OneToOne
+    @JoinColumn(name="users_id", referencedColumnName = "id")
+    @JsonIgnore
+    private User user;
+
     public Developer() {}
 
-    public Developer(String name, String email, Integer cohort) {
+    public Developer(String name, String email, Integer cohort, User user) {
         this.name = name;
         this.email = email;
         this.cohort = cohort;
+        this.user=user;
     }
 
     public Long getId() {
@@ -114,5 +121,13 @@ public class Developer {
 
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
