@@ -1,7 +1,9 @@
 package com.careerdevs.geekylikes.controllers;
 
+import com.careerdevs.geekylikes.payloads.response.NewsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +13,12 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/api/test")
 public class TestController {
 
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${geekylikes.app.newsApiKey}")
+    private String apiKey;
 
     @GetMapping("/public")
     public String allAccess() {
@@ -35,4 +43,18 @@ public class TestController {
         return "admin content";
     }
 
+    @GetMapping("/news/{q}")
+    public ResponseEntity<?> getNewsArticles(@PathVariable String q) {
+        String uri = "https://newsapi.org/v2/everything?sortBy=popularity&apiKey=" + apiKey + "&q=" + q;
+
+        NewsResponse response = restTemplate.getForObject(uri, NewsResponse.class);
+
+        return ResponseEntity.ok(response.getArticles());
+    }
+
+//    @GetMapping("/newsCategory/{category}")
+//    public ResponseEntity<?> getArticlesByCategory() {
+//
+//
+//    }
 }
