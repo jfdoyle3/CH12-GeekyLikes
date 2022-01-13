@@ -14,12 +14,12 @@ public class Relationship {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="originator_id", referencedColumnName = "id", table="developer")
+    @JoinColumn(name="originator_id", referencedColumnName = "id")
     @JsonIncludeProperties("id")
-    private Developer developer;
+    private Developer originator;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="recipient_id", referencedColumnName = "id", table="developer")
+    @JoinColumn(name="recipient_id", referencedColumnName = "id")
     @JsonIncludeProperties("id")
     private Developer recipient;
 
@@ -28,8 +28,8 @@ public class Relationship {
 
     public Relationship() {}
 
-    public Relationship(Developer developer, Developer recipient, ERelationship type) {
-        this.developer = developer;
+    public Relationship(Developer originator, Developer recipient, ERelationship type) {
+        this.originator = originator;
         this.recipient = recipient;
         this.type = type;
     }
@@ -42,12 +42,12 @@ public class Relationship {
         this.id = id;
     }
 
-    public Developer getDeveloper() {
-        return developer;
+    public Developer getOriginator() {
+        return originator;
     }
 
-    public void setDeveloper(Developer developer) {
-        this.developer = developer;
+    public void setOriginator(Developer originator) {
+        this.originator = originator;
     }
 
     public Developer getRecipient() {
