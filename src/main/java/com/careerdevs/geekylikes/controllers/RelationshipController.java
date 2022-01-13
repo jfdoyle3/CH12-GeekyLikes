@@ -117,13 +117,15 @@ public class RelationshipController {
         if (rel.isPresent()) {
             switch (rel.get().getType()) {
                 case PENDING:
-                    invRel.get().setType(ERelationship.ACCEPTED);
+                    invRel.get().setType(ERelationship.BLOCKED);
                     repository.save(invRel.get());
                     return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.CREATED);
                 case ACCEPTED:
-                    return new ResponseEntity<>(new MessageResponse("You are already friends stop taxing our system"), HttpStatus.OK);
+                    invRel.get().setType(ERelationship.BLOCKED);
+                    repository.save(invRel.get());
+                    return new ResponseEntity<>(new MessageResponse("You've been Blocked"), HttpStatus.OK);
                 case BLOCKED:
-                    return new ResponseEntity<>(new MessageResponse("GG"), HttpStatus.OK);
+                    return new ResponseEntity<>(new MessageResponse("Blocked"), HttpStatus.OK);
                 default:
                     return new ResponseEntity<>(new MessageResponse("SERVER ERROR _ DEFAULT RELATIONSHIP"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -137,13 +139,15 @@ public class RelationshipController {
         if (invRel.isPresent()) {
             switch (invRel.get().getType()) {
                 case PENDING:
-                    invRel.get().setType(ERelationship.ACCEPTED);
+                    invRel.get().setType(ERelationship.BLOCKED);
                     repository.save(invRel.get());
                     return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.CREATED);
                 case ACCEPTED:
-                    return new ResponseEntity<>(new MessageResponse("You are already friends stop taxing our system"), HttpStatus.OK);
+                    invRel.get().setType(ERelationship.BLOCKED);
+                    repository.save(invRel.get());
+                    return new ResponseEntity<>(new MessageResponse("You've been Blocked"), HttpStatus.OK);
                 case BLOCKED:
-                    return new ResponseEntity<>(new MessageResponse("GG"), HttpStatus.OK);
+                    return new ResponseEntity<>(new MessageResponse("blocked"), HttpStatus.OK);
                 default:
                     return new ResponseEntity<>(new MessageResponse("SERVER ERROR _ DEFAULT RELATIONSHIP"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
