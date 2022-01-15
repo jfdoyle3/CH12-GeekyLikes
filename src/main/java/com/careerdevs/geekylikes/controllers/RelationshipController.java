@@ -11,6 +11,7 @@ import com.careerdevs.geekylikes.repositories.DeveloperRepository;
 import com.careerdevs.geekylikes.repositories.RelationshipRepository;
 import com.careerdevs.geekylikes.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.ReplaceOverride;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -117,9 +118,6 @@ public class RelationshipController {
         if (rel.isPresent()) {
             switch (rel.get().getType()) {
                 case PENDING:
-                    invRel.get().setType(ERelationship.BLOCKED);
-                    repository.save(invRel.get());
-                    return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.CREATED);
                 case ACCEPTED:
                     invRel.get().setType(ERelationship.BLOCKED);
                     repository.save(invRel.get());
@@ -139,9 +137,6 @@ public class RelationshipController {
         if (invRel.isPresent()) {
             switch (invRel.get().getType()) {
                 case PENDING:
-                    invRel.get().setType(ERelationship.BLOCKED);
-                    repository.save(invRel.get());
-                    return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.CREATED);
                 case ACCEPTED:
                     invRel.get().setType(ERelationship.BLOCKED);
                     repository.save(invRel.get());
@@ -162,5 +157,65 @@ public class RelationshipController {
         return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.CREATED);
     }
 
+    @PostMapping("/approve/{id}")
+    private ResponseEntity<MessageResponse> approveRelationship(@PathVariable Long id){
+        User currentUser = userService.getCurrentUser();
+
+        if (currentUser == null) {
+            return new ResponseEntity<>(new MessageResponse("Invalid User"), HttpStatus.BAD_REQUEST);
+        }
+
+        Developer recipient= developerRepository.findByUser_id(currentUser.getId()).orElseThrow(()->
+                new ResponseStatusException((HttpStatus.NOT_FOUND)));
+
+        Relationship rel=repository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if(rel.getRecipient().getId() != recipient.getId())
+            return new ResponseEntity<>(new MessageResponse("Unauthorized"),HttpStatus.UNAUTHORIZED);
+
+        if(rel.getType()==ERelationship.PENDING){
+            rel.setType(ERelationship.ACCEPTED);
+            repository.save(rel);
+        }
+
+        return new ResponseEntity<>(new MessageResponse("Approved"),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/remove/{id}")
+    private ResponseEntity<MessageResponse> removeRelationship(@PathVariable Long id){
+        User currentUser = userService.getCurrentUser();
+
+        if (currentUser == null) {
+            return new ResponseEntity<>(new MessageResponse("Invalid User"), HttpStatus.BAD_REQUEST);
+        }
+
+        Developer developer= developerRepository.findByUser_id(currentUser.getId()).orElseThrow(()->
+                new ResponseStatusException((HttpStatus.NOT_FOUND)));
+
+        Relationship rel=repository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if(rel.getOriginator().getId() != developer.getId() && rel.getRecipient().getId() != developer.getId()){
+            new ResponseEntity<>(new MessageResponse("Unauthorized"),HttpStatus.UNAUTHORIZED);
+        }
+
+        if(rel.getType()==ERelationship.BLOCKED){
+            repository.delete(rel);
+        }
+        return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.OK);
+    }
+
+    @GetMapping("/friends")
+    public ResponseEntity<?> getFriends(){
+        User currentUser = userService.getCurrentUser();
+
+        if (currentUser == null) {
+            return new ResponseEntity<>(new MessageResponse("Invalid User"), HttpStatus.BAD_REQUEST);
+        }
+
+        Developer developer= developerRepository.findByUser_id(currentUser.getId()).orElseThrow(()->
+                new ResponseStatusException((HttpStatus.NOT_FOUND)));
+
+        
+    }
 }
 
