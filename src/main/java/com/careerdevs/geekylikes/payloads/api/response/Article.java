@@ -1,4 +1,4 @@
-package com.careerdevs.geekylikes.payloads.response;
+package com.careerdevs.geekylikes.payloads.api.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -1,6 +1,6 @@
 package com.careerdevs.geekylikes.controllers;
 
-import com.careerdevs.geekylikes.payloads.response.NewsResponse;
+import com.careerdevs.geekylikes.payloads.api.response.NewsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

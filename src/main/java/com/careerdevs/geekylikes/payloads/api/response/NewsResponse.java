@@ -1,5 +1,6 @@
-package com.careerdevs.geekylikes.payloads.response;
+package com.careerdevs.geekylikes.payloads.api.response;
 
+import com.careerdevs.geekylikes.payloads.api.response.Article;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;

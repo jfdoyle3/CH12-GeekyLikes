@@ -1,30 +1,25 @@
 package com.careerdevs.geekylikes.entities.developer;
 
+
 import com.careerdevs.geekylikes.entities.approve.Approve;
 import com.careerdevs.geekylikes.entities.auth.User;
 import com.careerdevs.geekylikes.entities.avatar.Avatar;
-import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.entities.language.Language;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
+import org.hibernate.annotations.WhereJoinTable;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-// Displays Developer record for only the first json record.
-// Comment out to show Developer on every json record.
-// Unwrap item one time.
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id"
-)
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id"
+//)
 @Entity
 public class Developer {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -33,10 +28,9 @@ public class Developer {
     private Integer cohort;
 //    private String[] languages;
 
-//    @OneToMany(mappedBy = "developer", fetch=FetchType.LAZY,)
+//    @OneToMany(mappedBy = "developer", fetch = FetchType.LAZY)
 //    private List<Geekout> geekouts;
 
-// Makes it one directional, but keeps many to many
     @ManyToMany
     @JoinTable(
             name = "developer_language",
@@ -54,9 +48,34 @@ public class Developer {
     private Avatar avatar;
 
     @OneToOne
-    @JoinColumn(name="users_id", referencedColumnName = "id")
+    @JoinColumn(name = "users_id", referencedColumnName = "id")
     @JsonIgnore
     private User user;
+
+    @ManyToMany()
+    @JoinTable(
+            name="relationship",
+            joinColumns = @JoinColumn(name="originator_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="recipient_id", referencedColumnName = "id")
+    )
+    @WhereJoinTable(clause = "type = 'ACCEPTED'")
+    @JsonIgnore
+    private Set<Developer> relationships;
+
+    @ManyToMany()
+    @JoinTable(
+            name="relationship",
+            joinColumns = @JoinColumn(name="recipient_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="originator_id", referencedColumnName = "id")
+    )
+    @JsonIgnore
+    @WhereJoinTable(clause = "type = 'ACCEPTED'")
+    private Set<Developer> inverseRelationships;
+
+    // pendingRelationships
+    // incomingRelationships
+    // blockedRelationships
+    // inverseBlockedRelationships
 
     public Developer() {}
 
@@ -64,7 +83,7 @@ public class Developer {
         this.name = name;
         this.email = email;
         this.cohort = cohort;
-        this.user=user;
+        this.user = user;
     }
 
     public Long getId() {
@@ -107,14 +126,6 @@ public class Developer {
         return languages;
     }
 
-//    public List<Geekout> getGeekouts() {
-//        return geekouts;
-//    }
-//
-//    public void setGeekouts(List<Geekout> geekouts) {
-//        this.geekouts = geekouts;
-//    }
-
     public Avatar getAvatar() {
         return avatar;
     }
@@ -129,5 +140,21 @@ public class Developer {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<Developer> getRelationships() {
+        return relationships;
+    }
+
+    public void setRelationships(Set<Developer> relationships) {
+        this.relationships = relationships;
+    }
+
+    public Set<Developer> getInverseRelationships() {
+        return inverseRelationships;
+    }
+
+    public void setInverseRelationships(Set<Developer> inverseRelationships) {
+        this.inverseRelationships = inverseRelationships;
     }
 }
