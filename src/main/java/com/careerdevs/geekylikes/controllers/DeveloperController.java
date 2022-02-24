@@ -6,29 +6,29 @@ import com.careerdevs.geekylikes.entities.avatar.Avatar;
 import com.careerdevs.geekylikes.entities.developer.Developer;
 import com.careerdevs.geekylikes.entities.geekout.Geekout;
 import com.careerdevs.geekylikes.entities.language.Language;
+import com.careerdevs.geekylikes.entities.relationship.ERelationship;
+import com.careerdevs.geekylikes.payloads.response.FriendDeveloper;
+import com.careerdevs.geekylikes.payloads.response.PublicDeveloper;
+import com.careerdevs.geekylikes.payloads.response.SelfDeveloper;
 import com.careerdevs.geekylikes.repositories.AvatarRepository;
 import com.careerdevs.geekylikes.repositories.DeveloperRepository;
 import com.careerdevs.geekylikes.repositories.GeekoutRepository;
-import com.careerdevs.geekylikes.repositories.UserRepository;
-import com.careerdevs.geekylikes.security.services.UserDetailsImpl;
+import com.careerdevs.geekylikes.repositories.RelationshipRepository;
 import com.careerdevs.geekylikes.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/developers")
 public class DeveloperController {
-
     @Autowired
     private DeveloperRepository repository;
 
@@ -36,19 +36,53 @@ public class DeveloperController {
     private AvatarRepository avatarRepository;
 
     @Autowired
-    private GeekoutRepository geekoutRepository;
+    GeekoutRepository geekoutRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    RelationshipRepository relationshipRepository;
 
     @Autowired
-    private UserService userService;
-
+    UserService userService;
 
     @GetMapping
-    @ResponseBody
-    public List<Developer> getDevelopers() {
+    public @ResponseBody List<Developer> getDevelopers() {
         return repository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDeveloperById(@PathVariable Long id) {
+        // get user
+        User currentUser = userService.getCurrentUser();
+
+        if (currentUser == null) {
+            return null;
+        }
+        Developer currentDeveloper = repository.findByUser_id(currentUser.getId()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+
+        Developer developer = repository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+
+        // check friendship
+        if (
+                relationshipRepository.existsByOriginator_idAndRecipient_idAndType(
+                        currentDeveloper.getId(), developer.getId(), ERelationship.ACCEPTED
+                ) || relationshipRepository.existsByOriginator_idAndRecipient_idAndType(
+                        developer.getId(), currentDeveloper.getId(), ERelationship.ACCEPTED
+                )
+        ) {
+
+//            Set<Developer> developerFriends = repository.findAllByRelationships_type(ERelationship.ACCEPTED);
+//            developerFriends.addAll(repository.findAllByInverseRelationships_type(ERelationship.ACCEPTED));
+            return new ResponseEntity<>(FriendDeveloper.build(developer), HttpStatus.OK);
+        }
+
+        // TODO: if blocked send 404
+
+        return new ResponseEntity<>(PublicDeveloper.build(developer), HttpStatus.OK);
+
     }
 
     @GetMapping("/lang/{langId}")
@@ -67,24 +101,25 @@ public class DeveloperController {
     }
 
     @GetMapping("/self")
-    public @ResponseBody Developer getSelf() {
+    public @ResponseBody SelfDeveloper getSelf() {
         User currentUser = userService.getCurrentUser();
 
         if (currentUser == null) {
             return null;
         }
-        return repository.findByUser_id(currentUser.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Developer currentDev =  repository.findByUser_id(currentUser.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return SelfDeveloper.build(currentDev);
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public Developer getOneDeveloper(@PathVariable Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
+//    @GetMapping("/{id}")
+//    public @ResponseBody Developer getOneDeveloper(@PathVariable Long id) {
+//        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//    }
 
 
     @PostMapping
-    public ResponseEntity<Developer> createDeveloper(@RequestBody Developer newDeveloper) {
+    public ResponseEntity<SelfDeveloper> createDeveloper(@RequestBody Developer newDeveloper) {
+
         User currentUser = userService.getCurrentUser();
 
         if (currentUser == null) {
@@ -93,10 +128,13 @@ public class DeveloperController {
 
         //TODO add check for existing developer profile.
         newDeveloper.setUser(currentUser);
-        return new ResponseEntity<>(repository.save(newDeveloper), HttpStatus.CREATED);
+
+        Developer dev = repository.save(newDeveloper);
+
+        return new ResponseEntity<>(SelfDeveloper.build(dev), HttpStatus.CREATED);
     }
 
-    @PutMapping("/photo")
+    @PostMapping("/photo")
     public Developer addPhoto(@RequestBody Developer dev) { // TODO refactor dev to updates
         User currentUser = userService.getCurrentUser();
 
@@ -105,6 +143,7 @@ public class DeveloperController {
         }
 
         Developer developer = repository.findByUser_id(currentUser.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // check if developer has an avatar and if so, delete or modify existing avatar before creating new.
         if (developer.getAvatar() != null) {
             Avatar avatar = developer.getAvatar();
             avatar.setUrl(dev.getAvatar().getUrl());
@@ -114,6 +153,7 @@ public class DeveloperController {
         Avatar avatar = avatarRepository.save(dev.getAvatar());
         developer.setAvatar(avatar);
         return repository.save(developer);
+
     }
 
     @PutMapping("/language")
@@ -124,6 +164,7 @@ public class DeveloperController {
             return null;
         }
         Developer developer = repository.findByUser_id(currentUser.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         developer.languages.addAll(updates);
         return repository.save(developer);
     }
@@ -142,7 +183,7 @@ public class DeveloperController {
         if (updates.getName() != null) developer.setName(updates.getName());
         if (updates.getEmail() != null) developer.setEmail(updates.getEmail());
         if (updates.getCohort() != null) developer.setCohort(updates.getCohort());
-    //    if (updates.languages != null) developer.languages = updates.languages;
+//        if (updates.languages != null) developer.languages = updates.languages;
 
         return repository.save(developer);
     }
@@ -157,7 +198,5 @@ public class DeveloperController {
         repository.deleteByUser_id(currentUser.getId());
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
-
-
 
 }
